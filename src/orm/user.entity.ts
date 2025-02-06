@@ -11,6 +11,9 @@ export class User {
   @Column()
   email: string;
 
+  @Column({ nullable: true }) // 允许 age 为空
+  age?: number;
+
   @Column()
-  age: number;
+  password: string; // 新增 password 字段
 }
