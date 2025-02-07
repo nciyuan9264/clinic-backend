@@ -17,6 +17,8 @@ import { Response } from 'express'; // 引入 express 的 Response 类型
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './jwt.config';
 import { refreshAccessToken } from './utils/auth.utils';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AppService {
@@ -31,6 +33,8 @@ export class AppService {
     private readonly myQueue: Queue, // 注入 Bull 队列
 
     private readonly jwtService: JwtService,
+
+    private readonly httpService: HttpService
   ) {}
 
   // 添加任务到队列
@@ -250,6 +254,27 @@ export class AppService {
       }
 
       throw new HttpException('无效的 Token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  async getBarcodeInfo(
+    @Body() body: { barcode: string; },
+    @Res() res: Response,
+  ): Promise<any> {
+    const { barcode } = body;
+    if (!barcode) {
+      throw new HttpException('缺少 barcode 参数', HttpStatus.BAD_REQUEST);
+    }
+
+    const apiKey = '909db8ae48e47d0125b699b107d4a68'; // 这里填入你的 API Key
+    const apiUrl = `https://api.tanshuapi.com/api/barcode/v1/index?key=${apiKey}&barcode=${barcode}`;
+
+    try {
+      const response = await firstValueFrom(this.httpService.get(apiUrl)); // 处理 Observable
+      return res.json(response.data); // 只返回 data 部分
+    } catch (error) {
+      console.error("获取条形码信息失败:", error.message);
+      return res.status(500).json({ message: "获取条形码信息失败" });
     }
   }
 }

@@ -8,6 +8,8 @@ import {
   BadRequestException,
   Res,
   Req,
+  Query,
+
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { RedisClientType } from 'redis';
@@ -71,7 +73,10 @@ export class AppController {
 
   @Get('check')
   async checkAuth(@Req() req: Request, @Res() res: Response): Promise<any> {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate',
+    );
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
 
@@ -88,5 +93,10 @@ export class AppController {
     res.clearCookie('refreshToken', { httpOnly: true });
 
     return res.json({ message: '退出成功' });
+  }
+
+  @Get('barcode')
+  async getBarcodeInfo(@Query('barcode') barcode: string, @Res() res: Response) {
+    this.appService.getBarcodeInfo({ barcode }, res);
   }
 }
