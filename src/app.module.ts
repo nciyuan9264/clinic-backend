@@ -12,6 +12,8 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './jwt.config';
 import { HttpModule } from '@nestjs/axios';
+import { MedicineModule } from './modules/medicine/medicine.module';
+import { MedicineEntity } from './orm/medicine.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { HttpModule } from '@nestjs/axios';
       database: process.env.MYSQL_DATABASE,
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: [User, MedicineEntity],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -59,6 +61,7 @@ import { HttpModule } from '@nestjs/axios';
     JwtModule.register({
       secret: jwtConstants.secret
     }),
+    MedicineModule,
   ],
   controllers: [AppController],
   providers: [
