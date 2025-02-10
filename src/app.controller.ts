@@ -7,9 +7,7 @@ import {
   UseInterceptors,
   BadRequestException,
   Res,
-  Req,
-  Query,
-
+  Req
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { RedisClientType } from 'redis';
@@ -93,10 +91,5 @@ export class AppController {
     res.clearCookie('refreshToken', { httpOnly: true });
 
     return res.json({ message: '退出成功' });
-  }
-
-  @Get('barcode')
-  async getBarcodeInfo(@Query('barcode') barcode: string, @Res() res: Response) {
-    this.appService.getBarcodeInfo({ barcode }, res);
   }
 }

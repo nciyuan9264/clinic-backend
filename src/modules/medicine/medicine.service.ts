@@ -1,13 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Body,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Res,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MedicineEntity } from '../../orm/medicine.entity';
 import { Repository } from 'typeorm';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { Response } from 'express'; // 引入 express 的 Response 类型
+import { GetBarcodeInfoType } from 'src/const/medicine';
 
 @Injectable()
 export class MedicineService {
   constructor(
     @InjectRepository(MedicineEntity)
     private readonly medicineRepository: Repository<MedicineEntity>,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(medicineData: Partial<MedicineEntity>) {
@@ -71,14 +82,11 @@ export class MedicineService {
   }
 
   // 根据 barcode 或 id 查找药品
-  async findByBarcodeOrId(barcodeOrId: string): Promise<MedicineEntity> {
+  async findById(Id: string): Promise<MedicineEntity> {
     // 如果 barcodeOrId 是数字类型（id），需要转换为数字
-    const id = isNaN(Number(barcodeOrId)) ? undefined : Number(barcodeOrId);
+    const id = isNaN(Number(Id)) ? undefined : Number(Id);
     const medicine = await this.medicineRepository.findOne({
-      where: [
-        { barcode: barcodeOrId }, // 根据 barcode 查找
-        { id }, // 如果是数字则按 id 查找
-      ],
+      where: { id },
     });
     if (!medicine) {
       throw new Error('药品未找到');
@@ -98,5 +106,63 @@ export class MedicineService {
       message: medicines.length > 0 ? '获取成功' : '暂无药品数据',
       data: medicines,
     };
+  }
+
+  async getBarcodeInfo(
+    { barcode, type }: { barcode: string; type: GetBarcodeInfoType },
+    res: Response
+  ): Promise<any> {
+    if (!barcode) {
+      throw new HttpException('缺少 barcode 参数', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      // **1. 先查数据库**
+      const existingMedicine = await this.medicineRepository.findOne({
+        where: { barcode },
+      });
+
+      if (existingMedicine) {
+        return res.json({
+          success: true,
+          source: 'database',
+          data: existingMedicine,
+        });
+      }
+      if(type == GetBarcodeInfoType.ONLY_DATABASE){
+        return res.json({
+          success: false,
+          source: '',
+          data: '',
+          message: '不存在该药品'
+        });
+      }
+
+      // **2. 数据库没有，再去请求 API**
+      const apiKey = '909db8ae48e47d0125b699b107d4a68';
+      const apiUrl = `https://api.tanshuapi.com/api/barcode/v1/index?key=${apiKey}&barcode=${barcode}`;
+
+      const response = await firstValueFrom(this.httpService.get(apiUrl));
+
+      // **3. API 成功返回，检查数据**
+      if (response.data && response.data.code === 200) {
+
+        return res.json({
+          success: true,
+          source: 'api',
+          data: response.data,
+        });
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: '未找到该条形码对应的药品信息',
+        });
+      }
+    } catch (error) {
+      console.error('获取条形码信息失败:', error.message);
+      return res
+        .status(500)
+        .json({ success: false, message: '获取条形码信息失败' });
+    }
   }
 }
