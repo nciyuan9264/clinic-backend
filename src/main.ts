@@ -7,7 +7,7 @@ async function bootstrap() {
   app.use(cookieParser());
   // 启用 CORS
   app.enableCors({
-    origin: ['http://localhost', 'http://localhost:9527', 'http://10.95.21.245:9527', 'http://10.4.61.37:9527','http://10.254.251.5'], // 允许的前端地址
+    origin: ['http://localhost', 'http://localhost:9527', 'http://10.95.21.245:9527', 'http://10.4.61.37:9527','http://10.254.255.52'], // 允许的前端地址
     credentials: true, // 支持 Cookie
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',

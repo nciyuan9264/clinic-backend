@@ -14,6 +14,8 @@ import { jwtConstants } from './jwt.config';
 import { HttpModule } from '@nestjs/axios';
 import { MedicineModule } from './modules/medicine/medicine.module';
 import { MedicineEntity } from './orm/medicine.entity';
+import { RecordModule } from './modules/record/record.module';
+import { RecordEntity } from './orm/record.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { MedicineEntity } from './orm/medicine.entity';
       database: process.env.MYSQL_DATABASE,
       synchronize: true,
       logging: true,
-      entities: [User, MedicineEntity],
+      entities: [User, MedicineEntity, RecordEntity],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -62,6 +64,7 @@ import { MedicineEntity } from './orm/medicine.entity';
       secret: jwtConstants.secret
     }),
     MedicineModule,
+    RecordModule,
   ],
   controllers: [AppController],
   providers: [

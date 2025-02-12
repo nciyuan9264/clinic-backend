@@ -1,9 +1,7 @@
 import {
-  Body,
   HttpException,
   HttpStatus,
-  Injectable,
-  Res,
+  Injectable
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MedicineEntity } from '../../orm/medicine.entity';
