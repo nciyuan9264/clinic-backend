@@ -13,10 +13,12 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { Response } from 'express'; // 引入 express 的 Response 类型
+import { Response, Express } from 'express'; // 引入 express 的 Response 类型
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './jwt.config';
 import { refreshAccessToken } from './utils/auth.utils';
+import * as OSS from 'ali-oss';
+
 @Injectable()
 export class AppService {
   constructor(
@@ -31,7 +33,11 @@ export class AppService {
 
     private readonly jwtService: JwtService,
 
-  ) {}
+    @Inject('OSS_CLIENT')
+    private readonly client: OSS, // ✅ 正确注入 OSS
+  ) {
+
+  }
 
   // 添加任务到队列
   async addJobToQueue(): Promise<void> {
@@ -250,6 +256,24 @@ export class AppService {
       }
 
       throw new HttpException('无效的 Token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  /**
+   * 上传文件到阿里云 OSS
+   * @param file 文件对象
+   */
+  async uploadFile(file: Express.Multer.File) {
+    try {
+      const fileName = `uploads/${Date.now()}-${file.originalname}`; // 生成唯一文件名
+      const result = await this.client.put(fileName, file.buffer);
+
+      return {
+        url: result.url, // 返回文件 URL
+        fileName,
+      };
+    } catch (error) {
+      throw new Error(`文件上传失败: ${error.message}`);
     }
   }
 }

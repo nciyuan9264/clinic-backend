@@ -28,5 +28,5 @@ export class RecordEntity {
   totalPrice?: number; // 一次性总价（如果是整体收费，使用此字段）
 
   @Column('json', { nullable: true })
-  medications?: MedicineEntity[]; // 使用的药品，存储为 JSON 数组
+  medications?: { medicine: MedicineEntity; amount: string }[]; // 修改为包含 medicine 和 amount 的对象数组
 }

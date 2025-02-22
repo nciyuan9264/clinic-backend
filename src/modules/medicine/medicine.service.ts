@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MedicineEntity } from '../../orm/medicine.entity';
 import { Repository } from 'typeorm';
@@ -41,7 +37,7 @@ export class MedicineService {
 
   async edit(medicineData: Partial<MedicineEntity>) {
     try {
-      // 先确保传入的 medicineData 中包含 id
+      // 先确保传入的 recordData 中包含 id
       if (!medicineData.id) {
         return {
           success: false,
@@ -49,7 +45,7 @@ export class MedicineService {
         };
       }
 
-      // 查找对应的药品
+      // 查找对应的病历记录
       const medicine = await this.medicineRepository.findOne({
         where: { id: medicineData.id },
       });
@@ -57,23 +53,36 @@ export class MedicineService {
       if (!medicine) {
         return {
           success: false,
-          message: '药品未找到',
+          message: '病历未找到',
         };
       }
 
-      // 更新药品信息（仅更新传入的字段）
+      // 更新病历信息（仅更新传入的字段）
       Object.assign(medicine, medicineData);
-      const updatedMedicine = await this.medicineRepository.save(medicine);
+
+      // 使用 update 方法来更新
+      const result = await this.medicineRepository.update(
+        medicine.id,
+        medicineData,
+      );
+
+      if (result.affected === 0) {
+        return {
+          success: false,
+          message: '病历未更新，请检查数据是否正确',
+        };
+      }
 
       return {
         success: true,
-        message: '药品更新成功',
-        data: updatedMedicine,
+        message: '病历更新成功',
+        data: medicine, // 或者 result 返回的信息
       };
     } catch (error) {
+      console.error('Error details:', error); // 打印错误详细信息
       return {
         success: false,
-        message: '药品更新失败',
+        message: '病历更新失败',
         error: error.message || '未知错误',
       };
     }
@@ -108,7 +117,7 @@ export class MedicineService {
 
   async getBarcodeInfo(
     { barcode, type }: { barcode: string; type: GetBarcodeInfoType },
-    res: Response
+    res: Response,
   ): Promise<any> {
     if (!barcode) {
       throw new HttpException('缺少 barcode 参数', HttpStatus.BAD_REQUEST);
@@ -127,12 +136,12 @@ export class MedicineService {
           data: existingMedicine,
         });
       }
-      if(type == GetBarcodeInfoType.ONLY_DATABASE){
+      if (type == GetBarcodeInfoType.ONLY_DATABASE) {
         return res.json({
           success: false,
           source: '',
           data: '',
-          message: '不存在该药品'
+          message: '不存在该药品',
         });
       }
 
@@ -144,7 +153,6 @@ export class MedicineService {
 
       // **3. API 成功返回，检查数据**
       if (response.data && response.data.code === 200) {
-
         return res.json({
           success: true,
           source: 'api',

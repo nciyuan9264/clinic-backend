@@ -16,7 +16,20 @@ import { MedicineModule } from './modules/medicine/medicine.module';
 import { MedicineEntity } from './orm/medicine.entity';
 import { RecordModule } from './modules/record/record.module';
 import { RecordEntity } from './orm/record.entity';
+import { OSS_CONFIG } from './config/oss.config';
+import * as OSS from 'ali-oss';
 
+const OssProvider = {
+  provide: 'OSS_CLIENT',
+  useFactory: () => {
+    return new OSS({
+      region: OSS_CONFIG.region,
+      accessKeyId: OSS_CONFIG.accessKeyId ?? '',
+      accessKeySecret: OSS_CONFIG.accessKeySecret ?? '',
+      bucket: OSS_CONFIG.bucket,
+    });
+  },
+};
 @Module({
   imports: [
     HttpModule,
@@ -32,9 +45,9 @@ import { RecordEntity } from './orm/record.entity';
       entities: [User, MedicineEntity, RecordEntity],
       poolSize: 10,
       connectorPackage: 'mysql2',
-      extra: {
-        authPlugin: 'sha256_password',
-      },
+      // extra: {
+      //   authPlugin: 'sha256_password',
+      // },
     }),
     TypeOrmModule.forFeature([User]),
     BullModule.forRoot({
@@ -85,6 +98,7 @@ import { RecordEntity } from './orm/record.entity';
         return client;
       },
     },
+    OssProvider,
   ],
 })
 export class AppModule {}

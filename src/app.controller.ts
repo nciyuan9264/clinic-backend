@@ -7,7 +7,8 @@ import {
   UseInterceptors,
   BadRequestException,
   Res,
-  Req
+  Req,
+  UploadedFile
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { RedisClientType } from 'redis';
@@ -15,6 +16,7 @@ import { User } from './orm/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express'; // 引入 express 的 Response 类型
 import { BullBoardInstance, InjectBullBoard } from '@bull-board/nestjs';
+import { Express } from 'express'; // ✅ 正确引入 Express 以支持 Multer.File 类型
 
 @Controller()
 export class AppController {
@@ -91,5 +93,11 @@ export class AppController {
     res.clearCookie('refreshToken', { httpOnly: true });
 
     return res.json({ message: '退出成功' });
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file')) // 处理文件上传
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return await this.appService.uploadFile(file);
   }
 }

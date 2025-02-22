@@ -51,7 +51,10 @@ export class MedicineEntity {
   net_weight: string;
 
   @Column({ nullable: false })
-  price: string; // 必填项
+  purchase_price: string; // 进价（必填）
+
+  @Column({ nullable: false })
+  sale_price: string; // 售价（必填）
 
   @Column()
   origin_country: string;
