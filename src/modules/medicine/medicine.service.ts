@@ -14,27 +14,45 @@ export class MedicineService {
     private readonly medicineRepository: Repository<MedicineEntity>,
     private readonly httpService: HttpService,
   ) {}
-
   async create(medicineData: Partial<MedicineEntity>) {
     try {
       console.log('wzy ', medicineData);
-      const medicine = this.medicineRepository.create(medicineData);
-      const savedMedicine = await this.medicineRepository.save(medicine);
+
+      // 1. 先查询数据库，判断是否存在相同的 `barcode` 或 (`goods_name` 和 `brand` 相同)
+      const existingMedicine = await this.medicineRepository.findOne({
+        where: [
+          { barcode: medicineData.barcode },
+          { goods_name: medicineData.goods_name, brand: medicineData.brand },
+        ],
+      });
+
+      let savedMedicine;
+
+      if (existingMedicine) {
+        // 2. 如果已存在，更新数据
+        await this.medicineRepository.update(existingMedicine.id, medicineData);
+        savedMedicine = await this.medicineRepository.findOne({
+          where: { id: existingMedicine.id },
+        });
+      } else {
+        // 3. 如果不存在，创建新数据
+        const medicine = this.medicineRepository.create(medicineData);
+        savedMedicine = await this.medicineRepository.save(medicine);
+      }
 
       return {
         success: true,
-        message: '药品创建成功',
+        message: existingMedicine ? '药品已更新' : '药品创建成功',
         data: savedMedicine,
       };
     } catch (error) {
       return {
         success: false,
-        message: '药品创建失败',
+        message: '药品创建/更新失败',
         error: error.message || '未知错误',
       };
     }
   }
-
   async edit(medicineData: Partial<MedicineEntity>) {
     try {
       // 先确保传入的 recordData 中包含 id
@@ -146,13 +164,12 @@ export class MedicineService {
       }
 
       // **2. 数据库没有，再去请求 API**
-      const apiKey = '909db8ae48e47d0125b699b107d4a68';
+      const apiKey = '909db8ae48e47d0125b699b1907d4a68'; //909db8ae48e47d0125b699b1907d4a68
       const apiUrl = `https://api.tanshuapi.com/api/barcode/v1/index?key=${apiKey}&barcode=${barcode}`;
-
       const response = await firstValueFrom(this.httpService.get(apiUrl));
 
       // **3. API 成功返回，检查数据**
-      if (response.data && response.data.code === 200) {
+      if (response.data && response.data.code === 1) {
         return res.json({
           success: true,
           source: 'api',
