@@ -28,7 +28,3 @@ services:
   redis-container:
     volumes:
       - /data/redis:/data  # 线上 Redis 数据持久化路径
-
-networks:
-  app-network:
-    external: true
