@@ -1,5 +1,7 @@
 services:
   clinic-app:
+    env_file:
+      - .env  # 确保这里引用的是正确的 .env 文件
     volumes:
       - ./clinic-app/dist:/usr/src/app/dist  # 仅本地需要挂载 dist 目录
     environment:

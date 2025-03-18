@@ -8,8 +8,6 @@ services:
       - redis-container
     ports:
       - "3000:3000"
-    env_file:
-      - .env  # 确保这里引用的是正确的 .env 文件
     environment:
       DATABASE_HOST: ${MYSQL_HOST}
       DATABASE_PORT: ${MYSQL_PORT}
