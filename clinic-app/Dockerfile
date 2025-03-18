@@ -1,5 +1,5 @@
 # Step 1: 使用带有 Node.js 的基础镜像
-FROM node:18-alpine as builder
+FROM node:18-alpine AS builder
 
 # 设置工作目录
 WORKDIR /usr/src/app

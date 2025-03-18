@@ -1,0 +1,14 @@
+services:
+  clinic-app:
+    volumes:
+      - ./clinic-app/dist:/usr/src/app/dist  # 仅本地需要挂载 dist 目录
+    environment:
+      NODE_ENV: development  # 本地环境标识
+
+  mysql-container:
+    volumes:
+      - /Users/bytedance/Desktop/test/node-fullstack-volumes/mysql:/var/lib/mysql  # 本地 MySQL 数据持久化路径
+
+  redis-container:
+    volumes:
+      - /Users/bytedance/Desktop/test/node-fullstack-volumes/redis:/data  # 本地 Redis 数据持久化路径

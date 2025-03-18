@@ -1,0 +1,13 @@
+services:
+  clinic-app:
+    environment:
+      NODE_ENV: production  # 线上环境
+    restart: always  # 保证服务异常退出后自动重启
+
+  mysql-container:
+    volumes:
+      - /data/mysql:/var/lib/mysql  # 线上 MySQL 数据持久化路径
+
+  redis-container:
+    volumes:
+      - /data/redis:/data  # 线上 Redis 数据持久化路径
