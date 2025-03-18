@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { createClient } from 'redis';
@@ -18,6 +18,7 @@ import { RecordModule } from './modules/record/record.module';
 import { RecordEntity } from './orm/record.entity';
 import { OSS_CONFIG } from './config/oss.config';
 import * as OSS from 'ali-oss';
+import { AuthMiddleware } from './middleware/auth.middleware';
 
 const OssProvider = {
   provide: 'OSS_CLIENT',
@@ -101,4 +102,8 @@ const OssProvider = {
     OssProvider,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('upload');  // 对所有路由应用中间件
+  }
+}

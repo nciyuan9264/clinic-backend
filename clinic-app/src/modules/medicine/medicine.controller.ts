@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Param, Query, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, Res, Req } from '@nestjs/common';
 import { MedicineService } from './medicine.service';
 import { MedicineEntity } from '../../orm/medicine.entity';
-import { Response } from 'express'; // 引入 express 的 Response 类型
 import { GetBarcodeInfoType } from 'src/const/medicine';
+import { Response, Request } from 'express'; // 引入 express 的 Response 类型
 
 @Controller('medicine')
 export class MedicineController {
@@ -28,7 +28,10 @@ export class MedicineController {
 
   // 获取药品列表接口
   @Get('list')
-  async getAllMedicines() {
+  async getAllMedicines(@Req() req: Request,) {
+    const accessToken = req.cookies['accessToken'];
+    const refreshToken = req.cookies['refreshToken'];
+    console.log('wzy refreshToken', req.headers);
     return this.medicineService.findAll();
   }
 

@@ -73,10 +73,6 @@ export class AppService {
     }
   }
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   async registerUser(
     @Body()
     userData: {
@@ -197,7 +193,7 @@ export class AppService {
     // 返回 Access Token
     return res.json({
       message: '登录成功',
-      accessToken,
+      userInfo: { username: existingUser.name },
     });
   }
 

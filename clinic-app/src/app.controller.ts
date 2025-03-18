@@ -28,12 +28,6 @@ export class AppController {
   @Inject('REDIS_CLIENT')
   private redisClient: RedisClientType;
 
-  @Get()
-  async getHello() {
-    // const keys = await this.redisClient.keys('*');
-    return this.appService.getHello();
-  }
-
   @Get('admin/queues')
   getQueues() {
     // return this.boardInstance.getRouter(); // 访问 UI 界面

@@ -24,10 +24,10 @@ export const refreshAccessToken = (refreshToken: string, res: Response, jwtServi
       maxAge: 7 * 24 * 60 * 60 * 1000, // 设置 Cookie 过期时间为 7 天
     });
 
-    return {
-      message: 'Token 自动刷新成功',
-      user: refreshPayload,
-    };
+    // return {
+    //   message: 'Token 自动刷新成功',
+    //   user: refreshPayload,
+    // };
   } catch (refreshErr) {
     console.error('refreshToken 失效:', refreshErr.message);
     throw new HttpException(
