@@ -1,7 +1,7 @@
 services:
   clinic-app:
     env_file:
-      - ../env
+      - /home/.env
     environment:
       NODE_ENV: production  # 线上环境
     restart: always  # 保证服务异常退出后自动重启
