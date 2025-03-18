@@ -16,13 +16,13 @@ jobs:
       - name: Set up SSH key for Aliyun
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.ALIYUN_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.ALIYUN_SSH_KEY }}" > ~/.ssh/wzy.pem
+          chmod 600 ~/.ssh/wzy.pem
           ssh-keyscan -H 39.106.136.220 >> ~/.ssh/known_hosts  # 添加阿里云服务器的公钥
         env:
           ALIYUN_SSH_KEY: ${{ secrets.ALIYUN_SSH_KEY }}  # 使用 GitHub Secrets
 
       - name: Deploy to Aliyun
         run: |
-          ssh -vvv -i ~/.ssh/id_rsa root@39.106.136.220
+          ssh -vvv -i ~/.ssh/wzy.pem root@39.106.136.220
           "cd /home && git pull origin master && docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
