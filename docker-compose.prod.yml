@@ -10,21 +10,6 @@ services:
     volumes:
       - /data/mysql:/var/lib/mysql  # 线上 MySQL 数据持久化路径
 
-  nginx-proxy:
-    image: nginx:latest
-    container_name: nginx-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /home/clinic-backend/nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # 挂载配置文件
-      - /data/nginx-key:/etc/letsencrypt  # 证书存放目录
-    depends_on:
-      - clinic-app
-    networks:
-      - app-network  # 这里手动加入网络
-
-
   redis-container:
     volumes:
       - /data/redis:/data  # 线上 Redis 数据持久化路径

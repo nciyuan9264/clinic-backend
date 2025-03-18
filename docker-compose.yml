@@ -18,7 +18,7 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       NODE_ENV: ${NODE_ENV}
     networks:
-      - app-network
+      - clinic-network
 
   mysql-container:
     image: mysql
@@ -26,7 +26,7 @@ services:
       - "3306:3306"
     restart: always
     networks:
-      - app-network
+      - clinic-network
 
   redis-container:
     image: redis
@@ -34,8 +34,8 @@ services:
       - "6379:6379"
     restart: always
     networks:
-      - app-network
+      - clinic-network
 
 networks:
-  app-network:
-    driver: bridge
+  clinic-network:
+    external: true
