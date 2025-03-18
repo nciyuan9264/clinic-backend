@@ -24,4 +24,4 @@ jobs:
 
       - name: Deploy to Aliyun
         run: |
-          ssh -vvv -i ~/.ssh/wzy.pem root@39.106.136.220 "pwd && ls -l /home"
+          ssh -vvv -i ~/.ssh/wzy.pem root@39.106.136.220 "pwd && ls -la"
