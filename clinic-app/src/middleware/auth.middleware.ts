@@ -30,6 +30,7 @@ export class AuthMiddleware implements NestMiddleware {
         // 如果 accessToken 过期，尝试使用 refreshToken 获取新 token
         try {
           refreshAccessToken(refreshToken as string, res, this.jwtService);
+          console.log('wzy, 刷新成功')
           return next();
         } catch (refreshErr) {
           throw new HttpException('认证已过期，请重新登录', HttpStatus.UNAUTHORIZED);

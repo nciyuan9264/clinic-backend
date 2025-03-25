@@ -16,8 +16,6 @@ export class MedicineService {
   ) {}
   async create(medicineData: Partial<MedicineEntity>) {
     try {
-      console.log('wzy ', medicineData);
-
       // 1. 先查询数据库，判断是否存在相同的 `barcode` 或 (`goods_name` 和 `brand` 相同)
       const existingMedicine = await this.medicineRepository.findOne({
         where: [

@@ -22,7 +22,6 @@ export class RecordService {
 
   async create(recordData: Partial<RecordEntity>) {
     try {
-      console.log('wzy ', recordData);
       const record = this.recordRepository.create(recordData);
       const savedRecord = await this.recordRepository.save(record);
 
