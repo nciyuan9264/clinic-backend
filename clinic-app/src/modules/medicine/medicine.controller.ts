@@ -28,10 +28,7 @@ export class MedicineController {
 
   // 获取药品列表接口
   @Get('list')
-  async getAllMedicines(@Req() req: Request,) {
-    const accessToken = req.cookies['accessToken'];
-    const refreshToken = req.cookies['refreshToken'];
-    console.log('wzy refreshToken', req.headers);
+  async getAllMedicines() {
     return this.medicineService.findAll();
   }
 

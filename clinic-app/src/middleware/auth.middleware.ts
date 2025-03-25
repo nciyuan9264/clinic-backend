@@ -28,8 +28,12 @@ export class AuthMiddleware implements NestMiddleware {
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         // 如果 accessToken 过期，尝试使用 refreshToken 获取新 token
-        res.json(refreshAccessToken(refreshToken as string, res, this.jwtService));
-        return next();
+        try {
+          refreshAccessToken(refreshToken as string, res, this.jwtService);
+          return next();
+        } catch (refreshErr) {
+          throw new HttpException('认证已过期，请重新登录', HttpStatus.UNAUTHORIZED);
+        }
       }
 
       throw new HttpException('无效的 Token', HttpStatus.UNAUTHORIZED);
