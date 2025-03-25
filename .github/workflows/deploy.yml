@@ -24,4 +24,10 @@ jobs:
 
       - name: Deploy to Aliyun
         run: |
-          ssh -i ~/.ssh/wzy.pem root@39.106.136.220 "cd /home/clinic-backend && git pull && docker compose down && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+          ssh -i ~/.ssh/wzy.pem root@39.106.136.220 << 'EOF'
+            cd /home/clinic-backend
+            git pull
+            docker compose down
+            docker system prune -f
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+          EOF
