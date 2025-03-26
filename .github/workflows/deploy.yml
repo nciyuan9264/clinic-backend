@@ -27,9 +27,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8 # 指定 pnpm 版本
+        run: npm i -g pnpm
 
       - name: Install dependencies
         run: |
