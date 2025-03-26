@@ -61,7 +61,7 @@ export class MedicineService {
         };
       }
 
-      // 查找对应的病历记录
+      // 查找对应的药品记录
       const medicine = await this.medicineRepository.findOne({
         where: { id: medicineData.id },
       });
@@ -69,11 +69,11 @@ export class MedicineService {
       if (!medicine) {
         return {
           success: false,
-          message: '病历未找到',
+          message: '药品未找到',
         };
       }
 
-      // 更新病历信息（仅更新传入的字段）
+      // 更新药品信息（仅更新传入的字段）
       Object.assign(medicine, medicineData);
 
       // 使用 update 方法来更新
@@ -85,20 +85,20 @@ export class MedicineService {
       if (result.affected === 0) {
         return {
           success: false,
-          message: '病历未更新，请检查数据是否正确',
+          message: '药品未更新，请检查数据是否正确',
         };
       }
 
       return {
         success: true,
-        message: '病历更新成功',
+        message: '药品更新成功',
         data: medicine, // 或者 result 返回的信息
       };
     } catch (error) {
       console.error('Error details:', error); // 打印错误详细信息
       return {
         success: false,
-        message: '病历更新失败',
+        message: '药品更新失败',
         error: error.message || '未知错误',
       };
     }

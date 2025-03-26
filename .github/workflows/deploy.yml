@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # 检出代码
+        uses: actions/checkout@v3  # 检出代码
 
       - name: Set up SSH key for Aliyun
         run: |
@@ -19,15 +19,42 @@ jobs:
           echo "${{ secrets.ALIYUN_SSH_KEY }}" > ~/.ssh/wzy.pem
           chmod 600 ~/.ssh/wzy.pem
           ssh-keyscan -H 39.106.136.220 >> ~/.ssh/known_hosts  # 添加阿里云服务器的公钥
-        env:
-          ALIYUN_SSH_KEY: ${{ secrets.ALIYUN_SSH_KEY }}  # 使用 GitHub Secrets
+
+      - name: Install Node.js and pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # 你可以换成自己的 Node.js 版本
+          cache: 'pnpm'  # 缓存 pnpm 依赖，加速构建
+
+      - name: Install dependencies
+        run: |
+          curl -fsSL https://get.pnpm.io/install.sh | sh -
+          export PATH="$HOME/.local/share/pnpm:$PATH"
+          pnpm install
+
+      - name: Build backend
+        run: |
+          cd clinic-backend
+          pnpm build
+
+      - name: Deploy dist to Aliyun Server
+        run: |
+          rsync -avz -e "ssh -i ~/.ssh/wzy.pem" ./dist root@39.106.136.220:/home/clinic-backend/clinic-app/dist
 
       - name: Deploy to Aliyun
         run: |
           ssh -i ~/.ssh/wzy.pem root@39.106.136.220 << 'EOF'
             cd /home/clinic-backend
             git pull
+            CONFIG_CHANGED=$(git diff --name-only HEAD~1 HEAD | grep -E 'package.json|pnpm-lock.yaml|docker-compose.*\.yml|Dockerfile|.*\.env' || echo "")
             docker compose down
             docker system prune -f
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+            if [ -n "$CONFIG_CHANGED" ]; then
+              echo "Config files changed, performing full rebuild..."
+              docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+            else
+              echo "No major changes detected, restarting services without rebuild."
+              docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+            fi
           EOF

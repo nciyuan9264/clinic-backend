@@ -4,6 +4,8 @@ services:
       - /home/.env
     environment:
       NODE_ENV: production  # 线上环境
+    volumes:
+      - ./clinic-app/dist:/usr/src/app/dist
     restart: always  # 保证服务异常退出后自动重启
 
   mysql-container:

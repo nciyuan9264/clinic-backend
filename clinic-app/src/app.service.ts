@@ -35,9 +35,7 @@ export class AppService {
 
     @Inject('OSS_CLIENT')
     private readonly client: OSS, // ✅ 正确注入 OSS
-  ) {
-
-  }
+  ) {}
 
   // 添加任务到队列
   async addJobToQueue(): Promise<void> {
