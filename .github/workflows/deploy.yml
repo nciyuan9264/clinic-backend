@@ -34,11 +34,12 @@ jobs:
           export SHELL=/bin/bash
           curl -fsSL https://get.pnpm.io/install.sh | sh -
           export PATH="$HOME/.local/share/pnpm:$PATH"
+          cd clinic-app
           pnpm install
 
       - name: Build backend
         run: |
-          cd clinic-backend
+          cd clinic-app
           pnpm build
 
       - name: Deploy dist to Aliyun Server
