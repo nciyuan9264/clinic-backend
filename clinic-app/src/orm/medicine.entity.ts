@@ -5,49 +5,49 @@ export class MedicineEntity {
   @PrimaryGeneratedColumn()
   id: number; // 主键，自增ID
 
-  @Column({ unique: true })
+  @Column({ unique: true, default: '' })
   barcode: string; // 唯一条形码
 
-  @Column()
+  @Column({nullable: false})
   brand: string;
 
   @Column({ nullable: false })
   goods_name: string; // 必填项
 
-  @Column()
+  @Column({nullable: true})
   company: string;
 
-  @Column()
+  @Column({nullable: true})
   keyword: string;
 
-  @Column()
+  @Column({nullable: true})
   goods_type: string;
 
-  @Column()
+  @Column({nullable: true})
   category_code: string;
 
-  @Column()
+  @Column({nullable: true})
   category_name: string;
 
-  @Column()
+  @Column({nullable: true})
   image: string;
 
-  @Column()
+  @Column({nullable: true})
   spec: string;
 
-  @Column()
+  @Column({nullable: true})
   width: string;
 
-  @Column()
+  @Column({nullable: true})
   height: string;
 
-  @Column()
+  @Column({nullable: true})
   depth: string;
 
-  @Column()
+  @Column({nullable: true})
   gross_weight: string;
 
-  @Column()
+  @Column({nullable: true})
   net_weight: string;
 
   @Column({ nullable: false })
@@ -56,28 +56,28 @@ export class MedicineEntity {
   @Column({ nullable: false })
   sale_price: string; // 售价（必填）
 
-  @Column()
+  @Column({nullable: true})
   origin_country: string;
 
-  @Column()
+  @Column({nullable: true})
   first_ship_date: string;
 
-  @Column()
+  @Column({nullable: true})
   packaging_type: string;
 
-  @Column()
+  @Column({nullable: true})
   shelf_life: string;
 
-  @Column()
+  @Column({nullable: true})
   min_sales_unit: string;
 
-  @Column()
+  @Column({nullable: true})
   certification_standard: string;
 
-  @Column()
+  @Column({nullable: true})
   certificate_license: string;
 
-  @Column()
+  @Column({nullable: true})
   remark: string;
 
   @Column({ type: 'text', nullable: true })
