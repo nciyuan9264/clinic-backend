@@ -20,11 +20,16 @@ jobs:
           chmod 600 ~/.ssh/wzy.pem
           ssh-keyscan -H 39.106.136.220 >> ~/.ssh/known_hosts  # 添加阿里云服务器的公钥
 
-      - name: Install Node.js and pnpm
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # 你可以换成自己的 Node.js 版本
-          cache: 'pnpm'  # 缓存 pnpm 依赖，加速构建
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8 # 指定 pnpm 版本
 
       - name: Install dependencies
         run: |
