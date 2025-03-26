@@ -44,6 +44,7 @@ jobs:
 
       - name: Deploy dist to Aliyun Server
         run: |
+          cd clinic-app
           rsync -avz -e "ssh -i ~/.ssh/wzy.pem" ./dist root@39.106.136.220:/home/clinic-backend/clinic-app/dist
 
       - name: Deploy to Aliyun
