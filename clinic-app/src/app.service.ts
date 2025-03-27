@@ -18,6 +18,7 @@ import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './jwt.config';
 import { refreshAccessToken } from './utils/auth.utils';
 import * as OSS from 'ali-oss';
+import OpenAI from 'openai';
 
 @Injectable()
 export class AppService {
@@ -35,6 +36,8 @@ export class AppService {
 
     @Inject('OSS_CLIENT')
     private readonly client: OSS, // ✅ 正确注入 OSS
+
+    private readonly openai: OpenAI,
   ) {}
 
   // 添加任务到队列
@@ -269,5 +272,28 @@ export class AppService {
     } catch (error) {
       throw new Error(`文件上传失败: ${error.message}`);
     }
+  }
+
+  async getChatStream(messages: any[], res: Response) {
+    res.flushHeaders(); // 立即发送 Headers，避免缓存问题
+    const stream = await this.openai.chat.completions.create({
+      model: 'deepseek-chat',
+      messages,
+      stream: true, // 启用流式返回
+    });
+
+    try {
+      for await (const chunk of stream) {
+        const text = JSON.stringify(chunk.choices[0]?.delta?.content);
+        if (text) {
+          res.write(`data: {"content": ${text}}\n\n`); // ✅ 格式必须是 `data: ...\n\n`
+        }
+      }
+    } catch (error) {
+      console.error('流式数据错误:', error);
+      res.write(`data: [ERROR] ${error.message}\n\n`);
+    }
+
+    res.end();
   }
 }

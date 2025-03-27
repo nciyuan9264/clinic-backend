@@ -94,4 +94,18 @@ export class AppController {
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     return await this.appService.uploadFile(file);
   }
+
+  @Post('chat')
+  async chat(@Body() body: { messages: any[] }, @Res() res: Response) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    try {
+      await this.appService.getChatStream(body.messages, res);
+    } catch (error) {
+      console.error('Error in chat stream:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
 }

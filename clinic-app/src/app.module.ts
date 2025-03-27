@@ -19,6 +19,7 @@ import { RecordEntity } from './orm/record.entity';
 import { OSS_CONFIG } from './config/oss.config';
 import * as OSS from 'ali-oss';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import OpenAI from 'openai';
 
 const OssProvider = {
   provide: 'OSS_CLIENT',
@@ -100,6 +101,15 @@ const OssProvider = {
       },
     },
     OssProvider,
+    {
+      provide: OpenAI,
+      useFactory: () => {
+        return new OpenAI({
+          baseURL: 'https://api.deepseek.com',
+          apiKey: process.env.DEEPSEEK_API_KEY,
+        });
+      },
+    },
   ],
 })
 export class AppModule implements NestModule {

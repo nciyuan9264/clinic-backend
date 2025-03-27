@@ -7,7 +7,7 @@ async function bootstrap() {
   app.use(cookieParser());
   // 启用 CORS
   app.enableCors({
-    origin: "*", // 允许的前端地址
+    origin: "http://localhost, https://yandaifu.xyz", // 允许的前端地址
     credentials: true, // 支持 Cookie
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
