@@ -11,7 +11,7 @@ import { User } from './orm/user.entity';
 import { RedisClientType } from 'redis';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { Response, Express } from 'express'; // 引入 express 的 Response 类型
 import { JwtService } from '@nestjs/jwt';
