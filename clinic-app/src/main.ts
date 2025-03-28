@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: "http://localhost",
-    credentials: true, // 允许 Cookie
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
   });
