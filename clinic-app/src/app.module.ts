@@ -106,7 +106,7 @@ const OssProvider = {
       useFactory: () => {
         return new OpenAI({
           baseURL: 'https://api.deepseek.com',
-          apiKey: process.env.DEEPSEEK_API_KEY,
+          apiKey: process.env.DEEPSEEK_API_KEY ?? 'sk-11183ffdc41147d98fb32eae9c2de86e',
         });
       },
     },
