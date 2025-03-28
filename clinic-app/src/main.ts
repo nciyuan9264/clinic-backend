@@ -7,20 +7,8 @@ async function bootstrap() {
   app.use(cookieParser());
   // 启用 CORS
 
-  const allowedOrigins = [
-    'http://localhost',
-    'https://yandaifu.xyz',
-    'https://www.yandaifu.xyz',
-  ];
-
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin); // 允许请求的 Origin
-      } else {
-        callback(new Error('Not allowed by CORS')); // 拒绝不在列表中的 Origin
-      }
-    },
+    origin: "http://localhost",
     credentials: true, // 允许 Cookie
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
