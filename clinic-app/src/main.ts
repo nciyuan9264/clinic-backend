@@ -8,7 +8,7 @@ async function bootstrap() {
   // 启用 CORS
   console.log('wzy process.env.DEEPSEEK_API_KEY', process.env);
   app.enableCors({
-    origin: "http://localhost",
+    origin: "https://www.yandaifu.xyz",
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
