@@ -17,6 +17,7 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
       NODE_ENV: ${NODE_ENV}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
     networks:
       - clinic-network
 
