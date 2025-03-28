@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   // 启用 CORS
-
+  console.log('wzy process.env.DEEPSEEK_API_KEY', process.env.DEEPSEEK_API_KEY);
   app.enableCors({
     origin: "http://localhost",
     credentials: true,
